@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<target name="auto_gen_swc_project">
+		<antcall target="svn_check"/>
+		
+		<if>
+			<and>
+				<not>
+					<equals arg1="${swc.name}" arg2="" />
+				</not>
+				<not>
+					<available file="${config.dir.src}/${swc.name}" type="dir" />
+				</not>
+			</and>
+			<then>
+				<property name="project.dir" value="${config.dir.src}/${swc.name}" />
+
+				<copy todir="${project.dir}" includeemptydirs="true">
+					<fileset dir="${config.dir.template}/swc_project">
+						<exclude name="src/.*" />
+						<include name="bin" />
+						<include name="lib" />
+						<include name="rsl" />
+						<include name=".lib" />
+						<include name=".rsl" />
+						<include name="src" />
+						<include name="src/" />
+						<include name=".islibrary" />
+						<include name=".dependlib" />
+						<include name=".dependrsl" />
+						<include name="template.xml" />
+					</fileset>
+				</copy>
+
+				<move file="${project.dir}/template.xml" tofile="${project.dir}/${swc.name}.xml" />
+				<replace file="${project.dir}/${swc.name}.xml" token="@@project_name@@" value="${swc.name}" />
+
+				<move todir="${project.dir}/src/${swc.name}">
+					<fileset dir="${project.dir}/src">
+						<exclude name="**/template.as" />
+						<include name="**/*" />
+					</fileset>
+				</move>
+				<move file="${project.dir}/src/template.as" tofile="${project.dir}/src/${swc.name}.as" />
+				<replace file="${project.dir}/src/${swc.name}.as" token="@@project_name@@" value="${swc.name}" />
+
+				<antcall target="auto_gen_swc_project_setting">
+					<param name="project.dir" value="${project.dir}" />
+				</antcall>
+				
+				<antcall target="svn_set_ignore_list">
+					<param name="project.dir" value="${project.dir}" />
+				</antcall>
+			</then>
+			<elseif>
+				<available file="${config.dir.src}/${swc.name}" type="dir" />
+				<then>
+					<echo>The project "${swc.name}" is exist!!</echo>
+				</then>
+			</elseif>
+			<else>
+				<echo>You have to enter a name</echo>
+			</else>
+		</if>
+	</target>
+
+	<target name="auto_gen_swf_project">
+		<antcall target="svn_check"/>
+		
+		<if>
+			<and>
+				<not>
+					<equals arg1="${swf.name}" arg2="" />
+				</not>
+				<not>
+					<available file="${config.dir.src}/${swf.name}" type="dir" />
+				</not>
+			</and>
+			<then>
+				<property name="project.dir" value="${config.dir.src}/${swf.name}" />
+
+				<copy todir="${project.dir}" includeemptydirs="true">
+					<fileset dir="${config.dir.template}/swf_project">
+						<exclude name="src/.*" />
+						<include name="bin" />
+						<include name="lib" />
+						<include name="rsl" />
+						<include name=".lib" />
+						<include name=".rsl" />
+						<include name="src" />
+						<include name="src/" />
+						<include name=".dependlib" />
+						<include name=".dependrsl" />
+						<include name="template.xml" />
+					</fileset>
+				</copy>
+				<move file="${project.dir}/template.xml" tofile="${project.dir}/${swf.name}.xml" />
+				<replace file="${project.dir}/${swf.name}.xml" token="@@project_name@@" value="${swf.name}" />
+
+				<move todir="${project.dir}/src/${swf.name}">
+					<fileset dir="${project.dir}/src">
+						<exclude name="**/template.as" />
+						<include name="**/*" />
+					</fileset>
+				</move>
+				<move file="${project.dir}/src/template.as" tofile="${project.dir}/src/${swf.name}.as" />
+				<replace file="${project.dir}/src/${swf.name}.as" token="@@project_name@@" value="${swf.name}" />
+
+				<antcall target="auto_gen_swf_project_setting">
+					<param name="project.dir" value="${project.dir}" />
+				</antcall>
+				
+				<antcall target="svn_set_ignore_list">
+					<param name="project.dir" value="${project.dir}" />
+				</antcall>
+			</then>
+			<elseif>
+				<available file="${config.dir.src}/${swf.name}" type="dir" />
+				<then>
+					<echo>The project "${swf.name}" is exist!!</echo>
+				</then>
+			</elseif>
+			<else>
+				<echo>You have to enter a name</echo>
+			</else>
+		</if>
+	</target>
+
+	<target name="auto_gen_setting">
+		<if>
+			<available file="${project.dir}/.islibrary"/>
+			<then>
+				<antcall target="auto_gen_swc_project_setting">
+					<param name="project.dir" value="${project.dir}" />
+				</antcall>
+			</then>
+			<else>
+				<antcall target="auto_gen_swf_project_setting">
+					<param name="project.dir" value="${project.dir}" />
+				</antcall>
+			</else>
+		</if>
+	</target>
+
+	<target name="auto_gen_swc_project_setting">
+		<basename file="${project.dir}" property="project.name" />
+
+		<copy todir="${project.dir}">
+			<fileset dir="${config.dir.template}/swc_project">
+				<include name=".settings/" />
+				<include name=".actionScriptProperties" />
+				<include name=".flexLibProperties" />
+				<include name=".project" />
+			</fileset>
+		</copy>
+
+		<replace file="${project.dir}/.project" token="@@project_name@@" value="${config.swc_project.prefix}${project.name}" />
+
+		<replace file="${project.dir}/.actionScriptProperties" token="@@project_name@@" value="${config.swc_project.prefix}${project.name}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@player_version@@" value="${config.player.version}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@swf_version@@" value="${config.swf.version}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@flex_config@@" value="${config.flex_config.file}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@playerglobal@@" value="${config.dir.playerglobal}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@lib@@" value="${config.dir.lib}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@rsl@@" value="${config.dir.rsl}" />
+
+		<java jar="${config.util.setting_jar}" fork="true">
+			<arg value="${project.dir}"/>
+			<arg value="${config.swc_project.prefix}"/>
+		</java>
+	</target>
+
+	<target name="auto_gen_swf_project_setting">
+		<basename file="${project.dir}" property="project.name" />
+
+		<copy todir="${project.dir}">
+			<fileset dir="${config.dir.template}/swf_project">
+				<include name=".settings/" />
+				<include name=".actionScriptProperties" />
+				<include name=".flexProperties" />
+				<include name=".project" />
+			</fileset>
+		</copy>
+
+		<replace file="${project.dir}/.project" token="@@project_name@@" value="${config.swf_project.prefix}${project.name}" />
+
+		<replace file="${project.dir}/.actionScriptProperties" token="@@project_name@@" value="${config.swf_project.prefix}${project.name}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@player_version@@" value="${config.player.version}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@swf_version@@" value="${config.swf.version}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@flex_config@@" value="${config.flex_config.file}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@playerglobal@@" value="${config.dir.playerglobal}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@lib@@" value="${config.dir.lib}" />
+		<replace file="${project.dir}/.actionScriptProperties" token="@@rsl@@" value="${config.dir.rsl}" />
+
+		<java jar="${config.util.setting_jar}" fork="true">
+			<arg value="${project.dir}"/>
+			<arg value="${config.swc_project.prefix}"/>
+		</java>
+	</target>
+	
+	<target name="svn_check">
+		<if>
+			<and>
+				<equals arg1="${config.is_use_svn}" arg2="true"/>
+				<not>
+					<available file="svn${exec_suffix}" filepath="${env.Path}" />
+				</not>
+			</and>
+			<then>
+    			<fail>
+You have to add `svn${exec_suffix}` to the Path
+        		</fail>
+			</then>
+		</if>
+	</target>
+	
+    <target name="svn_set_ignore_list">
+		<if>
+			<equals arg1="${config.is_use_svn}" arg2="true"/>
+			<then>
+		    	<exec executable="svn">
+		    		<arg value="add"/>
+		    		<arg value="-N"/>
+		    		<arg value="${project.dir}"/>
+		    	</exec>
+		    	<exec executable="svn">
+		    		<arg value="ps"/>
+		    		<arg value="svn:ignore"/>
+		    		<arg value="-F"/>
+		    		<arg value="${config.ignore_setting4svn}"/>
+		    		<arg value="${project.dir}"/>
+		    	</exec>
+			</then>
+		</if>
+    </target>
+</project>
