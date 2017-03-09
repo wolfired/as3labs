@@ -9,7 +9,7 @@ package idiot.signal {
 		
 		public final function addHandler(signal_id:uint, handler:Function):void {
 			var index:int = this.indexOfHandler(signal_id, handler);
-			if (-1 == index) {
+			if (-1 != index) {
 				return;
 			}
 			this.getHandlers(signal_id).push(handler);
@@ -17,10 +17,10 @@ package idiot.signal {
 		
 		public final function delHandler(signal_id:uint, handler:Function):void {
 			var index:int = this.indexOfHandler(signal_id, handler);
-			if (-1 < index) {
+			if (-1 == index) {
 				return;
 			}
-			this.getHandlers(signal_id).splice(index, 1);
+			this.getHandlers(signal_id).removeAt(index);
 		}
 		
 		public final function clnHnadler(signal_id:uint):void {
