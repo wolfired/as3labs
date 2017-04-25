@@ -7,20 +7,38 @@ package idiot.env {
 
 	/**
 	 * 全局/环境配置类
+	 * @includeExample MyEnv.as
 	 */
 	public class IdiotEnv {
 
-		public function IdiotEnv(stage:Stage) {
-			if(ExternalInterface.available) {
-				var url_args:URLVariables = new URLVariables(ExternalInterface.call("window.location.search.substring", 1));
-				this.extract(url_args);
-			}
-
-			var swf_args:Object = stage.loaderInfo.parameters;
-			this.extract(swf_args);
+		public function IdiotEnv() {
 		}
 
 		private var _args:Object = {};
+
+		/**
+		 * @param stage
+		 * @param callback () => void
+		 * @param cfg_url
+		 */
+		public final function setup(stage:Stage, callback:Function, cfg_url:String = "./cfg"):void {
+			load(cfg_url, function(dat:String):void {
+				if(null != dat) {
+					var cfg_args:URLVariables = new URLVariables(dat);
+					cover(cfg_args);
+				}
+
+				if(ExternalInterface.available) {
+					var url_args:URLVariables = new URLVariables(ExternalInterface.call("window.location.search.substring", 1));
+					cover(url_args);
+				}
+
+				var swf_args:Object = stage.loaderInfo.parameters;
+				cover(swf_args);
+
+				callback();
+			});
+		}
 
 		public final function format():String {
 			var args:Vector.<String> = new Vector.<String>();
@@ -82,10 +100,41 @@ package idiot.env {
 			return _args[key] as String || value;
 		}
 
-		private function extract(args:Object):void {
+		private function cover(args:Object):void {
 			for(var key:String in args) {
 				_args[key] = args[key];
 			}
 		}
 	}
+}
+
+import flash.events.Event;
+import flash.events.IOErrorEvent;
+import flash.net.URLLoader;
+import flash.net.URLLoaderDataFormat;
+import flash.net.URLRequest;
+
+/**
+ * @param url
+ * @param callback (dat:String = null) => void
+ */
+function load(url:String, callback:Function):void {
+	var onLoaded:Function = function(event:Event):void {
+		loader.removeEventListener(Event.COMPLETE, onLoaded);
+		loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+
+		callback(loader.data as String);
+	};
+
+	var onError:Function = function(event:IOErrorEvent):void {
+		loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+		loader.removeEventListener(Event.COMPLETE, onLoaded);
+
+		callback(null);
+	};
+
+	var loader:URLLoader = new URLLoader(new URLRequest(url));
+	loader.dataFormat = URLLoaderDataFormat.TEXT;
+	loader.addEventListener(Event.COMPLETE, onLoaded);
+	loader.addEventListener(IOErrorEvent.IO_ERROR, onError);
 }
