@@ -23,7 +23,22 @@
 	</target>
 
 	<target name="doc" depends="setup" description="Doc all">
-		<asdoc output="${config.dir.ref}" package-description-file="${basedir}/package.xml" lenient="true" debug="${config.debug}" debug-password="${config.debug.password}" optimize="${config.optimize}" incremental="${config.incremental}" locale="${config.locale}" target-player="${config.player.version}" swf-version="${config.swf.version}" fork="true">
+		<if>
+			<resourcecount when="equal" count="0">
+				<dirset dir="${config.dir.src}" includes="**/*/" />
+			</resourcecount>
+			<then>
+				<fail>
+Do not have any src
+				</fail>
+			</then>
+		</if>
+
+		<mkdir dir="${config.dir.exp}" />
+
+		<antcall target="exp_all" />
+
+		<asdoc output="${config.dir.ref}" examples-path="${config.dir.exp}" package-description-file="${config.root.dir}/package.xml" lenient="true" debug="${config.debug}" debug-password="${config.debug.password}" optimize="${config.optimize}" incremental="${config.incremental}" locale="${config.locale}" target-player="${config.player.version}" swf-version="${config.swf.version}" fork="true">
 			<load-config filename="${config.flex_config.file}" />
 
 			<doc-sources dir="${config.dir.src}">
@@ -32,10 +47,10 @@
 
 			<external-library-path dir="${config.dir.playerglobal}" includes="**/*.swc" append="true" />
 
-			<library-path dir="${config.dir.src}" includes="**/lib/*.swc" append="true" />
+			<library-path dir="${config.dir.src}" includes="**/lib/${config.compile.version}/*.swc" append="true" />
 			<library-path dir="${config.dir.lib}" includes="**/*.swc" append="true" />
-			<external-library-path dir="${config.dir.src}/" includes="**/rsl/*.swc" append="true" />
-			<external-library-path dir="${config.dir.rsl}/" includes="**/*.swc" append="true" />
+			<external-library-path dir="${config.dir.src}" includes="**/rsl/${config.compile.version}/*.swc" append="true" />
+			<external-library-path dir="${config.dir.rsl}" includes="**/*.swc" append="true" />
 
 			<jvmarg line="${jvmarg.asdoc}" />
 		</asdoc>
@@ -122,6 +137,36 @@
 		<antcall target="wrap_all" />
 	</target>
 
+	<target name="exp_all">
+		<foreach param="project.dir" target="exp_one" parallel="${config.parallel}" maxthreads="${config.maxthread}" inheritall="true">
+			<path>
+				<dirset dir="${config.dir.src}">
+					<depth max="0" min="0" />
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+
+	<target name="exp_one">
+		<basename file="${project.dir}" property="project.name" />
+		<if>
+			<and>
+				<available filepath="${config.dir.src}" file="${project.name}" type="dir" />
+				<available filepath="${config.dir.src}" file=".islibrary"/>
+				<available filepath="${config.dir.src}" file="${config.exp.dir}" type="dir" />
+			</and>
+			<then>
+				<copy todir="${config.dir.exp}" verbose="${config.verbose}">
+					<fileset dir="${config.dir.src}/${project.name}/${config.exp.dir}">
+						<include name="**/*" />
+					</fileset>
+				</copy>
+			</then>
+			<else>
+			</else>
+		</if>
+	</target>
+
 	<target name="wrap_all">
 		<foreach param="project.dir" target="wrap_one" parallel="${config.parallel}" maxthreads="${config.maxthread}" inheritall="true">
 			<path>
@@ -154,11 +199,12 @@
 		<antcall target="clean_log" />
 		<antcall target="clean_ref" />
 		<antcall target="clean_src" />
+		<antcall target="clean_tmp" />
 	</target>
 
 	<target name="clean_bin">
 		<delete includeemptydirs="true" verbose="true">
-			<fileset dir="${config.dir.bin}">
+			<fileset dir="${config.dir.bin.root}">
 				<exclude name=".gitkeep" />
 				<include name="**/*" />
 			</fileset>
@@ -186,11 +232,15 @@
 	<target name="clean_src">
 		<delete includeemptydirs="true" verbose="true">
 			<fileset dir="${config.dir.src}">
-				<include name="**/bin/*" />
-				<include name="**/.lib/*" />
-				<include name="**/.rsl/*" />
+				<include name="**/bin/*/" />
+				<include name="**/.lib/*/" />
+				<include name="**/.rsl/*/" />
 			</fileset>
 		</delete>
+	</target>
+
+	<target name="clean_tmp">
+		<delete dir="${config.dir.tmp}" includeemptydirs="true" verbose="true" />
 	</target>
 
 	<target name="clean_setting" depends="setup" description="Clean all setting">
