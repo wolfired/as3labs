@@ -1,8 +1,8 @@
 package idiot.signal {
 
-	public class IdiotSignalRouter {
+	public class SignalRouter implements ISignalRouter {
 
-		public function IdiotSignalRouter() {
+		public function SignalRouter() {
 
 		}
 
@@ -30,7 +30,7 @@ package idiot.signal {
 			this.getHandlers(signal_id).length = 0;
 		}
 
-		public final function route(signal:IdiotSignal):void {
+		public final function route(signal:Signal):void {
 			var handlers:Vector.<Function> = this.getHandlers(signal.signal_id);
 
 			for each(var handler:Function in handlers) {
