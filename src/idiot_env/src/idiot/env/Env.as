@@ -8,12 +8,12 @@ package idiot.env {
 	/**
 	 * 全局/环境参数类
 	 * 支持(优先级由高到低)：(页面)加载器传参，(页面)URL传参，(本地/远程)文件传参
-	 * 
+	 *
 	 * @includeExample MyEnv.as
 	 */
-	public class IdiotEnv {
+	public class Env {
 
-		public function IdiotEnv() {
+		public function Env() {
 		}
 
 		private var _args:Object = {};
@@ -99,7 +99,7 @@ package idiot.env {
 		}
 
 		protected final function saveString(key:String, value:String):void {
-			_args[key] = _args[key] as String || value;
+			_args[key] = value;
 		}
 
 		protected final function loadString(key:String, value:String):String {
@@ -139,8 +139,9 @@ function load(url:String, callback:Function):void {
 		callback(null);
 	};
 
-	var loader:URLLoader = new URLLoader(new URLRequest(url));
+	var loader:URLLoader = new URLLoader();
 	loader.dataFormat = URLLoaderDataFormat.TEXT;
 	loader.addEventListener(Event.COMPLETE, onLoaded);
 	loader.addEventListener(IOErrorEvent.IO_ERROR, onError);
+	loader.load(new URLRequest(url));
 }
