@@ -27,7 +27,7 @@ package idiot.rsl {
 		private var _loader:Loader;
 		private var _ctxs:Vector.<LoaderContext>;
 
-		public function load(bytes:ByteArray, ctx:uint = MERGE):void {
+		public function load(bytes:ByteArray, ctx:uint = RSLoader.MERGE):void {
 			_loader.loadBytes(bytes, _ctxs[ctx]);
 		}
 	}
