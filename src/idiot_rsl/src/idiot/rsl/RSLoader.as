@@ -7,9 +7,9 @@ package idiot.rsl {
 	import flash.utils.ByteArray;
 
 	public final class RSLoader {
-		public static const STANDALONE:uint = 0x0;
-		public static const MERGE:uint = 0x1;
-		public static const APPEND:uint = 0x2;
+		public static const STANDALONE:uint = 0x1;
+		public static const MERGE:uint = 0x2;
+		public static const APPEND:uint = 0x3;
 
 		public function RSLoader() {
 			_loader = new Loader();

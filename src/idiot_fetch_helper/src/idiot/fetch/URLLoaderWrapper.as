@@ -23,13 +23,11 @@ package idiot.fetch {
 		}
 
 		override protected function onLoading(event:ProgressEvent):void {
-			_loadings[0](_request.url, event.bytesLoaded, event.bytesTotal);
+			_task.loading(_request.url, event.bytesLoaded, event.bytesTotal);
 		}
 
 		override protected function onLoaded(event:Event):void {
-			_loadings.shift();
-
-			_loadeds.shift()(_request.url, _loader.data);
+			_task.loaded(_request.url, _loader.data);
 
 			this.unlock();
 			this.load();

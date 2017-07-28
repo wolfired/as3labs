@@ -11,17 +11,13 @@ package idiot.fetch {
 		public function Wrapper() {
 			_request = new URLRequest();
 
-			_urls = new Vector.<String>();
-			_loadings = new Vector.<Function>();
-			_loadeds = new Vector.<Function>();
+			_task_hub = new TaskHub();
 		}
 
 		protected var _request:URLRequest;
+		protected var _task:Task;
 
-		protected var _urls:Vector.<String>;
-		protected var _loadings:Vector.<Function>
-		protected var _loadeds:Vector.<Function>
-
+		private var _task_hub:TaskHub;
 		private var _status:uint = STATUS_IDLE;
 
 		/**
@@ -30,29 +26,32 @@ package idiot.fetch {
 		 * @param loaded (url:String, raw:ByteArray) => void
 		 */
 		public final function fetch(url:String, loading:Function, loaded:Function):void {
-			_urls.push(url);
-			_loadings.push(loading);
-			_loadeds.push(loaded);
+			_task_hub.touch(url, loading, loaded);
 
 			this.load();
 		}
 
 		protected final function get loadable():Boolean {
-			if(0 == _urls.length) {
+			if(0 == _task_hub.busy_count) {
 				return false;
 			}
 
 			if(STATUS_BUSY == _status) {
 				return false;
 			}
-			_status = STATUS_BUSY
 
-			_request.url = _urls.shift();
+			_status = STATUS_BUSY;
+
+			_task = _task_hub.pull();
+
+			_request.url = _task.url;
 
 			return true;
 		}
 
 		protected final function unlock():void {
+			_task_hub.push(_task);
+
 			_status = STATUS_IDLE;
 		}
 

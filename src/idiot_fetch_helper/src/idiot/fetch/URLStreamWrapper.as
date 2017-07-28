@@ -27,18 +27,16 @@ package idiot.fetch {
 		}
 
 		override protected function onLoading(event:ProgressEvent):void {
-			_loadings[0](_request.url, event.bytesLoaded, event.bytesTotal);
+			_task.loading(_request.url, event.bytesLoaded, event.bytesTotal);
 
 			if(this.extract()) {
-				_loadeds[0](_request.url, _dat);
+				_task.loaded(_request.url, _dat);
 			}
 		}
 
 		override protected function onLoaded(event:Event):void {
-			_loadings.shift();
-
 			if(this.extract()) {
-				_loadeds.shift()(_request.url, _dat);
+				_task.loaded(_request.url, _dat);
 			}
 
 			this.unlock();
