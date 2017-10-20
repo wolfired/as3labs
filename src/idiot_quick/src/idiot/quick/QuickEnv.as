@@ -12,7 +12,7 @@ package idiot.quick {
 		public function get preloads():Vector.<String> {
 			if(null == _preloads) {
 				var str:String = this.loadString("preloads", "");
-				_preloads = Vector.<String>(str.match(/[_.a-zA-Z0-9]+/g));
+				_preloads = Vector.<String>(str.match(/[_\.a-zA-Z0-9]+/g));
 			}
 
 			return _preloads;
