@@ -4,6 +4,8 @@ package idiot.env {
 	import flash.external.ExternalInterface;
 	import flash.net.URLVariables;
 	import flash.utils.describeType;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
 
 	/**
 	 * 全局/环境参数类
@@ -43,23 +45,26 @@ package idiot.env {
 		}
 
 		/**
-		 * 在调IdiotEnv.setup之前调用本方法，显示默认参数列表
-		 * @return 参数列表
-		 */
-		public final function format():String {
+		 * 显示默认参数列表
+		 */		
+		public final function print():void {
+			var qname:String = getQualifiedClassName(this);
+			var clazz:Class = getDefinitionByName(qname) as Class;
+			var inst:Env = new clazz() as Env;
+			
 			var args:Vector.<String> = new Vector.<String>();
 
-			for each(var accessor:XML in describeType(this).accessor) {
+			for each(var accessor:XML in describeType(inst).accessor) {
 				if("writeonly" == accessor.@access) {
 					continue;
 				}
 				var key:String = accessor.@name;
-				args.push(key + "=" + this[key]);
+				args.push(key + "=" + inst[key]);
 			}
 
 			args.sort(0);
 
-			return args.join("\n");
+			trace(args.join("\n"));
 		}
 
 		protected final function saveBoolean(key:String, value:Boolean):void {
