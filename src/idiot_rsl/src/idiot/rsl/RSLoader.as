@@ -18,7 +18,7 @@ package idiot.rsl {
 				trace("loader uncaught error events: ", event.error);
 			});
 
-			_ctxs = new Vector.<LoaderContext>(3, true);
+			_ctxs = new Vector.<LoaderContext>(4, true);
 			_ctxs[STANDALONE] = new LoaderContext(false, new ApplicationDomain(null));
 			_ctxs[MERGE] = new LoaderContext(false, ApplicationDomain.currentDomain);
 			_ctxs[APPEND] = new LoaderContext(false, new ApplicationDomain(ApplicationDomain.currentDomain));
