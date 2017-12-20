@@ -1,22 +1,23 @@
 package idiot.ui {
 
-	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 
 	public class VisualElement {
-		public static const STATE_DOWN:uint = 0;
-		public static const STATE_UP:uint = 1;
-		public static const STATE_OUT:uint = 0;
-		public static const STATE_OVER:uint = 1
+		protected static const STATE_UP:uint = 0;
+		protected static const STATE_DOWN:uint = 1;
+		protected static const STATE_OVER:uint = 0;
+		protected static const STATE_OUT:uint = 1;
 
 		public function VisualElement() {
 			_skins = new Vector.<BitmapData>();
-			_canvas = new Bitmap();
-			
+			_canvas = new Sprite();
+
 			_canvas.addEventListener(Event.ADDED_TO_STAGE, addToStage);
 			_canvas.addEventListener(Event.REMOVED_FROM_STAGE, removeFromStage);
+			_canvas.addEventListener(Event.RENDER, onRender);
 
 			_canvas.addEventListener(MouseEvent.MOUSE_UP, mouseUp);
 			_canvas.addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
@@ -30,21 +31,52 @@ package idiot.ui {
 
 		public var _skins:Vector.<BitmapData>;
 
-		private var _canvas:Bitmap;
+		private var _canvas:Sprite;
 
 		private var _vstate:uint;
 		private var _hstate:uint;
 
-		public function get canvas():Bitmap {
+		private var _x:int;
+		private var _y:int;
+
+		public function get x():int {
+			return _x;
+		}
+
+		public function set x(value:int):void {
+			_x = value;
+		}
+
+		public function get y():int {
+			return _y;
+		}
+
+		public function set y(value:int):void {
+			_y = value;
+		}
+
+		public final function get canvas():Sprite {
 			return _canvas;
 		}
 
-		private function addToStage(event:Event):void {
+		public function updateState():void {
+			var skin:BitmapData = _skins[(_vstate << 1) + _hstate];
+			_canvas.graphics.clear();
+			_canvas.graphics.beginBitmapFill(skin);
+			_canvas.graphics.drawRect(0, 0, skin.width * 2, skin.height * 2);
+			_canvas.graphics.endFill();
+		}
 
+		private function addToStage(event:Event):void {
+			this.updateState();
 		}
 
 		private function removeFromStage(event:Event):void {
 
+		}
+
+		private function onRender(event:Event):void {
+			this.updateState();
 		}
 
 		private function mouseUp(event:MouseEvent):void {
@@ -52,8 +84,8 @@ package idiot.ui {
 				return;
 			}
 			_vstate = STATE_UP;
-			
-			this.updateState();
+
+			_canvas.stage.invalidate();
 		}
 
 		private function mouseDown(event:MouseEvent):void {
@@ -61,8 +93,8 @@ package idiot.ui {
 				return;
 			}
 			_vstate = STATE_DOWN;
-			
-			this.updateState();
+
+			_canvas.stage.invalidate();
 		}
 
 		private function mouseMove(event:MouseEvent):void {
@@ -76,8 +108,8 @@ package idiot.ui {
 				return;
 			}
 			_hstate = STATE_OVER;
-			
-			this.updateState();
+
+			_canvas.stage.invalidate();
 		}
 
 		private function mouseOut(event:MouseEvent):void {
@@ -85,12 +117,8 @@ package idiot.ui {
 				return;
 			}
 			_hstate = STATE_OUT;
-			
-			this.updateState();
-		}
 
-		public function updateState():void {
-			_canvas.bitmapData = _skins[_hstate << 1 | _vstate];
+			_canvas.stage.invalidate();
 		}
 	}
 }

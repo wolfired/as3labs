@@ -1,16 +1,17 @@
 package idiot.ui {
 
-	public class VisualContainer {
-		public function at(index:int):VisualElement {
-			return null;
+	public class VisualContainer extends VisualElement {
+
+		public function VisualContainer() {
+			_display_list = new Vector.<VisualElement>();
 		}
 
-		public function add(e:VisualElement):VisualElement {
-			return null;
+		private var _display_list:Vector.<VisualElement>;
+
+		public final function add(i:int, e:VisualElement):void {
 		}
 
-		public function del(e:VisualElement):int {
-			return 0;
+		public final function del(i:int):void {
 		}
 	}
 }
