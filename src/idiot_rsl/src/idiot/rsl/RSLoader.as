@@ -1,7 +1,6 @@
 package idiot.rsl {
 
 	import flash.display.Loader;
-	import flash.events.Event;
 	import flash.events.UncaughtErrorEvent;
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
@@ -19,13 +18,13 @@ package idiot.rsl {
 				trace("loader uncaught error events: ", event.error);
 			});
 
-			_ctx_map = [];
+			_ctx_map = new Vector.<LoaderContext>();
 			_ctx_map[MERGE] = new LoaderContext(false, ApplicationDomain.currentDomain);
 			_ctx_map[APPEND] = new LoaderContext(false, new ApplicationDomain(ApplicationDomain.currentDomain));
 		}
 
 		private var _loader:Loader;
-		private var _ctx_map:Array;
+		private var _ctx_map:Vector.<LoaderContext>;
 
 		public function load(bytes:ByteArray, ctx:uint = RSLoader.MERGE):uint {
 			var idx:uint;
