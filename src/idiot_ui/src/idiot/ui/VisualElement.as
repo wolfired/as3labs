@@ -63,7 +63,7 @@ package idiot.ui {
 			var skin:BitmapData = _skins[(_vstate << 1) + _hstate];
 			_canvas.graphics.clear();
 			_canvas.graphics.beginBitmapFill(skin);
-			_canvas.graphics.drawRect(0, 0, skin.width * 2, skin.height * 2);
+			_canvas.graphics.drawRect(0, 0, skin.width, skin.height);
 			_canvas.graphics.endFill();
 		}
 
