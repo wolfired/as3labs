@@ -3,7 +3,7 @@
 	 Mar 10, 2014 3:54:12 P
 	 LinkWu
 	 ====================================================================== -->
-<project default="help" basedir=".">
+<project default="menu" basedir=".">
 	<description>
 		Flex/AS3 project template
 	</description>
@@ -11,10 +11,15 @@
 	<import file="build_setup.xml" />
 	<import file="build_order.xml" />
 	<import file="build_gen.xml" />
-	<import file="build_ftp.xml" />
 	<import file="build_util.xml" />
 
 	<target name="help" description="Show help message">
+		<exec executable="cmd" osfamily="windows">
+		    <arg line="/c ant -p"/>
+		</exec>
+		<exec executable="sh" osfamily="unix">
+		     <arg line="-c ant -p"/>
+		</exec>
 	</target>
 
 	<target name="menu" description="Show menu">
@@ -56,7 +61,7 @@ Do not have any src
 		</asdoc>
 	</target>
 
-	<target name="select"  depends="setup" description="Build the selected">
+	<target name="select"  depends="setup, util_check_all" description="Build the selected">
 		<input message="Please enter project name, delimit them with a comma:" addproperty="targets.name" defaultvalue="" />
 		<java jar="${config.util.order_jar}" fork="true" outputproperty="build.order" failonerror="true">
 			<arg value="${basedir}"/>
@@ -66,7 +71,7 @@ Do not have any src
 		<foreach target="build_more" list="${build.order}" delimiter=";" param="targets.name" trim="true" parallel="false" inheritall="true" />
 	</target>
 
-	<target name="build" depends="setup" description="Build all">
+	<target name="build" depends="setup, util_check_all" description="Build all">
 		<java jar="${config.util.order_jar}" fork="true" outputproperty="build.order" failonerror="true">
 			<arg value="${basedir}"/>
 			<!--<jvmarg value="-Dfile.encoding=${file.encoding}"/>-->
@@ -125,14 +130,6 @@ Do not have any src
 		</if>
 	</target>
 
-	<target name="up" depends="setup" description="Upload the swc">
-		<antcall target="ftp_up" />
-	</target>
-
-	<target name="down" depends="setup" description="Download the swc">
-		<antcall target="ftp_down" />
-	</target>
-
 	<target name="wrap" depends="setup" description="Wrap all">
 		<antcall target="wrap_all" />
 	</target>
@@ -149,7 +146,6 @@ Do not have any src
 
 	<target name="exp_one">
 		<basename file="${project.dir}" property="project.name" />
-
 		<if>
 			<and>
 				<available filepath="${config.dir.src}" file="${project.name}" type="dir" />
@@ -157,7 +153,6 @@ Do not have any src
 				<available filepath="${config.dir.src}/${project.name}" file="${config.exp.dir}" type="dir" />
 			</and>
 			<then>
-				
 				<copy todir="${config.dir.exp}" verbose="${config.verbose}">
 					<fileset dir="${config.dir.src}/${project.name}/${config.exp.dir}">
 						<include name="**/*" />
@@ -269,19 +264,19 @@ Do not have any src
 		</delete>
 	</target>
 
-	<target name="swc" depends="setup" description="New a swc project">
+	<target name="swc" depends="setup" description="Create one or more swc project">
 		<input message="Please enter some library name, delimit them with a comma:" addproperty="swcs.name" />
 
 		<foreach target="auto_gen_swc_project" list="${swcs.name}" delimiter="," param="swc.name" trim="true" parallel="true" maxthreads="4" inheritall="true" />
 	</target>
 
-	<target name="swf" depends="setup" description="New a swf project">
+	<target name="swf" depends="setup" description="Create one or more swf project">
 		<input message="Please enter some project name, delimit them with a comma:" addproperty="swfs.name" />
 
 		<foreach target="auto_gen_swf_project" list="${swfs.name}" delimiter="," param="swf.name" trim="true" parallel="true" maxthreads="4" inheritall="true" />
 	</target>
 
-	<target name="setting" depends="setup, clean_setting" description="Gen all setting">
+	<target name="setting" depends="setup, clean_setting, util_check_all" description="Gen all setting">
 		<foreach target="auto_gen_setting" param="project.dir" parallel="true" maxthreads="4" inheritall="true">
 			<path>
 				<dirset dir="${config.dir.src}">
@@ -292,7 +287,7 @@ Do not have any src
 	</target>
 
     <target name="util" depends="setup" description="Rebuild ext util">
-		<foreach target="rebuild_util" param="project.dir" parallel="true" maxthreads="4" inheritall="true">
+		<foreach target="util_rebuild" param="project.dir" parallel="true" maxthreads="4" inheritall="true">
 			<path>
 				<dirset dir="${config.dir.util}">
 					<depth max="0" min="0" />
