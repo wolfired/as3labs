@@ -1,0 +1,31 @@
+{
+    "config": "flex",
+    "type": "app",
+    "compilerOptions": {
+        "source-path": [
+            "src",
+            @@external_src@@
+        ],
+        "output": "bin/@@compile_version@@/@@project_name@@.swf",
+        "debug": @@is_debug@@,
+        "load-config": [],
+        "swf-version": @@swf_version@@,
+        "target-player": "@@player_version@@",
+        "static-link-runtime-shared-libraries": true,
+        "library-path": [
+            "@@global_lib_root@@",
+            "@@global_lib@@",
+            "@@local_lib_root@@",
+            "@@local_lib@@",
+        ],
+        "external-library-path": [
+            "@@global_rsl_root@@",
+            "@@global_rsl@@",
+            "@@local_rsl_root@@",
+            "@@local_rsl@@",
+        ],
+    },
+    "files": [
+        "src/@@project_name@@.as",
+    ],
+}
