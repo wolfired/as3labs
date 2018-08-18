@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <overviews>
 	<packages>
-		<package name="">
+		<package name="pool">
 			<shortDescription>
-				<![CDATA[]]>
+				<![CDATA[对象池]]>
 			</shortDescription>
 			<description>
-				<![CDATA[]]>
+				<![CDATA[对象池]]>
 			</description>
 		</package>
 	</packages>
