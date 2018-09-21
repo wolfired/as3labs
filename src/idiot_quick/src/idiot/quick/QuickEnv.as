@@ -19,7 +19,7 @@ package idiot.quick {
 		}
 
 		public function get loadingbackground():String {
-			return this.loadString("loadingbackground", "./loadingback.jpg");
+			return this.loadString("loadingbackground", "./loadingbg.jpg");
 		}
 	}
 }

@@ -27,14 +27,17 @@ package idiot.env {
 		 */
 		public final function setup(stage:Stage, callback:Function, cfg_url:String = "./cfg"):void {
 			load(cfg_url, function(dat:String):void {
-				if(null != dat) {
+				if(null != dat && "" != dat) {
 					var cfg_args:URLVariables = new URLVariables(dat);
 					cover(cfg_args);
 				}
 
 				if(ExternalInterface.available) {
-					var url_args:URLVariables = new URLVariables(ExternalInterface.call("window.location.search.substring", 1));
-					cover(url_args);
+					dat = ExternalInterface.call("window.location.search.substring", 1);
+					if(null != dat && "" != dat) {
+						var url_args:URLVariables = new URLVariables(dat);
+						cover(url_args);
+					}
 				}
 
 				var swf_args:Object = stage.loaderInfo.parameters;
@@ -46,12 +49,12 @@ package idiot.env {
 
 		/**
 		 * 显示默认参数列表
-		 */		
+		 */
 		public final function print():void {
 			var qname:String = getQualifiedClassName(this);
 			var clazz:Class = getDefinitionByName(qname) as Class;
 			var inst:Env = new clazz() as Env;
-			
+
 			var args:Vector.<String> = new Vector.<String>();
 
 			for each(var accessor:XML in describeType(inst).accessor) {
@@ -130,19 +133,19 @@ import flash.net.URLRequest;
  * @param callback (dat:String = null) => void
  */
 function load(url:String, callback:Function):void {
-	var onLoaded:Function = function(event:Event):void {
+	function onLoaded(event:Event):void {
 		loader.removeEventListener(Event.COMPLETE, onLoaded);
 		loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
 
 		callback(loader.data as String);
-	};
+	}
 
-	var onError:Function = function(event:IOErrorEvent):void {
+	function onError(event:IOErrorEvent):void {
 		loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
 		loader.removeEventListener(Event.COMPLETE, onLoaded);
 
 		callback(null);
-	};
+	}
 
 	var loader:URLLoader = new URLLoader();
 	loader.dataFormat = URLLoaderDataFormat.TEXT;

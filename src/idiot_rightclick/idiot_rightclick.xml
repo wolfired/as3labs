@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="idiot_fetch_helper" basedir=".">
+<project name="idiot_rightclick" basedir=".">
 	<property name="dir.bin" value="${basedir}/bin/${config.compile.version}" />
 	<property name="dir.lib" value="${basedir}/lib/${config.compile.version}" />
 	<property name="dir.rsl" value="${basedir}/rsl/${config.compile.version}" />

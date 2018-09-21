@@ -1,6 +1,8 @@
 package idiot.rsl {
 
 	import flash.display.Loader;
+	import flash.events.Event;
+	import flash.events.ProgressEvent;
 	import flash.events.UncaughtErrorEvent;
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
@@ -13,6 +15,8 @@ package idiot.rsl {
 
 		public function RSLoader() {
 			_loader = new Loader();
+			_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onLoading);
+			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoaded);
 			_loader.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, function(event:UncaughtErrorEvent):void {
 				event.preventDefault();
 				trace("loader uncaught error events: ", event.error);
@@ -21,16 +25,29 @@ package idiot.rsl {
 			_ctx_map = new Vector.<LoaderContext>();
 			_ctx_map[MERGE] = new LoaderContext(false, ApplicationDomain.currentDomain);
 			_ctx_map[APPEND] = new LoaderContext(false, new ApplicationDomain(ApplicationDomain.currentDomain));
+
+			_task = new RSLoaderTask();
 		}
 
 		private var _loader:Loader;
 		private var _ctx_map:Vector.<LoaderContext>;
 
-		public function load(bytes:ByteArray, ctx:uint = RSLoader.MERGE):uint {
+		private var _task:RSLoaderTask;
+
+		/**
+		 * @param bytes
+		 * @param loaded (task:Task) => void
+		 * @param ctx
+		 * @return
+		 */
+		public function load(bytes:ByteArray, loaded:Function, loading:Function = null, ctx:uint = RSLoader.MERGE):uint {
+			_task.loaded = loaded;
+			_task.loading = loading;
+
 			var idx:uint;
 
 			if(STANDALONE == ctx) {
-				idx = _ctx_map.push(new LoaderContext(false, new ApplicationDomain(null)));
+				idx = _ctx_map.push(new LoaderContext(false, new ApplicationDomain(null))) - 1;
 			} else {
 				idx = ctx;
 			}
@@ -38,6 +55,14 @@ package idiot.rsl {
 			_loader.loadBytes(bytes, _ctx_map[idx]);
 
 			return idx;
+		}
+
+		private function onLoading(event:ProgressEvent):void {
+			_task.loading(_task);
+		}
+
+		private function onLoaded(event:Event):void {
+			_task.loaded(_task);
 		}
 	}
 }
