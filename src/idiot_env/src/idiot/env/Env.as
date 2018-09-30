@@ -18,7 +18,7 @@ package idiot.env {
 		public function Env() {
 		}
 
-		private var _args:Object = {};
+		private const _args:Object = {};
 
 		/**
 		 * @param stage
@@ -49,11 +49,12 @@ package idiot.env {
 
 		/**
 		 * 显示默认参数列表
-		 */
-		public final function print():void {
-			var qname:String = getQualifiedClassName(this);
-			var clazz:Class = getDefinitionByName(qname) as Class;
-			var inst:Env = new clazz() as Env;
+		 * @param separator 分隔符, "\n" or "&"
+		 */		
+		public final function print(separator:String = "\n"):void {
+			const qname:String = getQualifiedClassName(this);
+			const clazz:Class = getDefinitionByName(qname) as Class;
+			const inst:Env = new clazz() as Env;
 
 			var args:Vector.<String> = new Vector.<String>();
 
@@ -67,7 +68,7 @@ package idiot.env {
 
 			args.sort(0);
 
-			trace(args.join("\n"));
+			trace(args.join(separator));
 		}
 
 		protected final function saveBoolean(key:String, value:Boolean):void {
