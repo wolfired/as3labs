@@ -1,4 +1,4 @@
-package pool {
+package idiot.pool {
 
 	import flash.utils.Dictionary;
 
@@ -8,9 +8,17 @@ package pool {
 	}
 
 	public final class Pool {
+		private static const _ins:Pool = new Pool();
 
-		private static const _clazz_dict:Dictionary = new Dictionary();
-		private static const _ins_dict:Dictionary = new Dictionary();
+		public static function get ins():Pool {
+			return _ins;
+		}
+
+		public function Pool() {
+		}
+
+		private const _clazz_dict:Dictionary = new Dictionary();
+		private const _ins_dict:Dictionary = new Dictionary();
 
 		/**
 		 * 从对象池取出对象
@@ -18,7 +26,7 @@ package pool {
 		 * @return
 		 * @see IPoolable
 		 */
-		public static function pull(clazz:Class):IPoolable {
+		public function pull(clazz:Class):IPoolable {
 			SWITCH::debug {
 				const full_name:String = getQualifiedClassName(IPoolable);
 
@@ -56,7 +64,7 @@ package pool {
 				ins = pools.pop();
 			}
 
-			ins.init();
+			ins.reset();
 
 			return ins;
 		}
@@ -66,7 +74,7 @@ package pool {
 		 * @param ins
 		 * @see IPoolable
 		 */
-		public static function push(ins:IPoolable):void {
+		public function push(ins:IPoolable):void {
 			SWITCH::debug {
 				const full_name:String = getQualifiedClassName(IPoolable);
 
@@ -92,11 +100,5 @@ package pool {
 			const pools:Vector.<IPoolable> = _ins_dict[ins] as Vector.<IPoolable>;
 			pools.push(ins);
 		}
-
-		public function Pool(singleton:Singleton) {
-		}
 	}
-}
-
-class Singleton {
 }
