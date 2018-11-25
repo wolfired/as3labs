@@ -1,13 +1,19 @@
 package idiot.rsl {
 
-	public class RSLoaderTask {
+	import idiot.pool.IPoolable;
+
+	public class RSLoaderTask implements IPoolable {
 		public function RSLoaderTask() {
-			_loaded = fn_loaded;
-			_loading = fn_loading;
+			this.reset();
 		}
 
 		private var _loaded:Function = null;
 		private var _loading:Function = null;
+
+		public function reset():void {
+			_loaded = fn_loaded;
+			_loading = fn_loading;
+		}
 
 		public function get loaded():Function {
 			return _loaded;

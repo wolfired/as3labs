@@ -13,6 +13,12 @@ package idiot.rsl {
 		public static const APPEND:uint = 0x1;
 		public static const STANDALONE:uint = 0x2;
 
+		private static const _ins:RSLoader = new RSLoader();
+
+		public static function get ins():RSLoader {
+			return _ins;
+		}
+
 		public function RSLoader() {
 			_loader = new Loader();
 			_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onLoading);
@@ -25,6 +31,9 @@ package idiot.rsl {
 			_ctx_map = new Vector.<LoaderContext>();
 			_ctx_map[MERGE] = new LoaderContext(false, ApplicationDomain.currentDomain);
 			_ctx_map[APPEND] = new LoaderContext(false, new ApplicationDomain(ApplicationDomain.currentDomain));
+
+			_ctx_map[MERGE].allowCodeImport = true;
+			_ctx_map[APPEND].allowCodeImport = true;
 
 			_task = new RSLoaderTask();
 		}
@@ -40,19 +49,22 @@ package idiot.rsl {
 		 * @param ctx
 		 * @return
 		 */
-		public function load(bytes:ByteArray, loaded:Function, loading:Function = null, ctx:uint = RSLoader.MERGE):uint {
+		public function load(bytes:ByteArray, loaded:Function, loading:Function = null, policy:uint = RSLoader.MERGE):uint {
 			_task.loaded = loaded;
 			_task.loading = loading;
 
+			var ctx:LoaderContext;
 			var idx:uint;
 
-			if(STANDALONE == ctx) {
-				idx = _ctx_map.push(new LoaderContext(false, new ApplicationDomain(null))) - 1;
+			if(STANDALONE == policy) {
+				idx = _ctx_map.push(ctx = new LoaderContext(false, new ApplicationDomain(null))) - 1;
+				ctx.allowCodeImport = true;
 			} else {
-				idx = ctx;
+				idx = policy;
+				ctx = _ctx_map[idx];
 			}
 
-			_loader.loadBytes(bytes, _ctx_map[idx]);
+			_loader.loadBytes(bytes, ctx);
 
 			return idx;
 		}

@@ -7,6 +7,11 @@ package idiot.fetch {
 	import flash.utils.ByteArray;
 
 	public final class StreamFetcher {
+		private static const _ins:StreamFetcher = new StreamFetcher();
+
+		public static function get ins():StreamFetcher {
+			return _ins;
+		}
 
 		public function StreamFetcher() {
 			_streamer = new URLStream();
