@@ -9,6 +9,22 @@ package idiot.quick {
 
 		private var _preloads:Vector.<String>;
 
+		public function get host():String {
+			return this.loadString("host", "127.0.0.1");
+		}
+
+		public function get port():int {
+			return this.loadInt("port", 8888);
+		}
+
+		public function get pfr():int {
+			return this.loadInt("pfr", 843);
+		}
+
+		public function get daemon():String {
+			return this.loadString("daemon", "./demo_daemoner.swf");
+		}
+
 		public function get preloads():Vector.<String> {
 			if(null == _preloads) {
 				var str:String = this.loadString("preloads", "");
