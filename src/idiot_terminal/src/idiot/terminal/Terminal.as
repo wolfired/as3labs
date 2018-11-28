@@ -99,8 +99,8 @@ package idiot.terminal {
 import flash.filters.BitmapFilterQuality;
 import flash.filters.GlowFilter;
 
-const output_line:int = 32;
+const output_line:int = 22;
 const line_hei:Number = 24.8;
-const wid:Number = 800.0;
+const wid:Number = 832.0;
 const font_size:Number = 16.0;
 const BLACK:Array = [new GlowFilter(0x000000, 1.0, 1.2, 1.2, 128, BitmapFilterQuality.HIGH)];
