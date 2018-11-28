@@ -9,5 +9,4 @@ package {
 			daemon(this);
 		}
 	}
-
 }
