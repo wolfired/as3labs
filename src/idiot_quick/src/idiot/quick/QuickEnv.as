@@ -25,6 +25,10 @@ package idiot.quick {
 			return this.loadString("daemon", "./demo_daemoner.swf");
 		}
 
+		public function get entry():String {
+			return this.loadString("entry", "demo.entry::ModuleEntry");
+		}
+
 		public function get preloads():Vector.<String> {
 			if(null == _preloads) {
 				var str:String = this.loadString("preloads", "");
@@ -35,7 +39,11 @@ package idiot.quick {
 		}
 
 		public function get loadingbackground():String {
-			return this.loadString("loadingbackground", "./loadingbg.jpg");
+			return this.loadString("loadingbackground", this.cdn + "/loadingbg.jpg");
+		}
+
+		public function get cdn():String {
+			return this.loadString("cdn", "http://127.0.0.1:55555");
 		}
 	}
 }
