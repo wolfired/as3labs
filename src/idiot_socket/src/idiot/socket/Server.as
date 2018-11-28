@@ -6,7 +6,8 @@ package idiot.socket {
 	import flash.net.Socket;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
-	import flash.utils.setInterval;
+	import idiot.log.Log;
+	import idiot.log.Logs;
 
 	public class Server {
 		private static const _ins:Server = new Server();
@@ -53,25 +54,15 @@ package idiot.socket {
 		}
 
 		private function onConnect(event:Event):void {
-			trace("connected");
-
-			var bs:ByteArray = new ByteArray();
-			bs.writeShort(3);
-			bs.writeByte(0);
-			bs.writeByte(1);
-			bs.writeByte(2);
-
-			setInterval(function():void {
-				Server.ins.send(bs);
-			}, 2000);
+			Logs.ins.log("Socket connected", Log.LEVEL_INFO);
 		}
 
 		private function onClose(event:Event):void {
-			trace("closed");
+			Logs.ins.log("Socket closed", Log.LEVEL_INFO);
 		}
 
 		private function onMessage(event:ProgressEvent):void {
-			trace("messaged");
+			Logs.ins.log("Socket messaged", Log.LEVEL_INFO);
 
 			if(!_reader.read(_sock)) {
 				return;

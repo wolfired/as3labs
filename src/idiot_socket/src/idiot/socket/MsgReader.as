@@ -2,6 +2,8 @@ package idiot.socket {
 
 	import flash.utils.ByteArray;
 	import flash.utils.IDataInput;
+	import idiot.log.Log;
+	import idiot.log.Logs;
 
 	public final class MsgReader implements IReader {
 		public function MsgReader() {
@@ -28,9 +30,17 @@ package idiot.socket {
 
 			_len = uint.MAX_VALUE;
 
-			for(var i:int = 0; i < _bytes.length; ++i) {
-				trace(_bytes[i]);
+			const arr:Array = [];
+
+			for(var i:int = 0; i < Math.min(10, _bytes.length); ++i) {
+				arr.push(_bytes[i]);
 			}
+
+			if(10 < _bytes.length) {
+				arr.push("...");
+			}
+
+			Logs.ins.log("Socket data: [" + arr.join(", ") + "]", Log.LEVEL_INFO);
 
 			return true;
 		}
