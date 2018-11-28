@@ -2,9 +2,8 @@ package idiot.thread {
 
 	import flash.events.Event;
 	import flash.system.MessageChannel;
+	
 	import idiot.codec.ICodec;
-	import idiot.log.Log;
-	import idiot.log.Logs;
 
 	internal final class Channel {
 		public function Channel(channel:MessageChannel) {
@@ -33,19 +32,15 @@ package idiot.thread {
 		}
 
 		private function onActivate(event:Event):void {
-			Logs.ins.log("channel is Activated", Log.LEVEL_INFO);
 		}
 
 		private function onDeactivate(event:Event):void {
-			Logs.ins.log("channel is Deactivated", Log.LEVEL_INFO);
 		}
 
 		private function onChannelStage(event:Event):void {
-			trace("channel is " + _channel.state);
 		}
 
 		private function onChannelMessage(event:Event):void {
-			trace(Thread.current.id, this.recv());
 		}
 	}
 }

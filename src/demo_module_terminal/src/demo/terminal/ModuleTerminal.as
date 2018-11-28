@@ -1,6 +1,7 @@
 package demo.terminal {
 
 	import flash.system.System;
+	
 	import idiot.fetch.Fetcher;
 	import idiot.fetch.FetcherTask;
 	import idiot.flags.Flags;

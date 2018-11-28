@@ -19,6 +19,7 @@ package idiot.quick {
 import flash.display.Bitmap;
 import flash.display.Loader;
 import flash.display.Sprite;
+import flash.display.Stage;
 import flash.display.StageAlign;
 import flash.display.StageQuality;
 import flash.display.StageScaleMode;
@@ -27,19 +28,18 @@ import flash.events.ProgressEvent;
 import flash.events.UncaughtErrorEvent;
 import flash.system.Security;
 import flash.system.System;
-
+import flash.utils.getDefinitionByName;
 import idiot.fetch.Fetcher;
 import idiot.fetch.FetcherTask;
 import idiot.fetch.StreamFetcher;
+import idiot.jobs.Job;
 import idiot.jobs.JobsQueue;
 import idiot.log.Log;
 import idiot.log.Logs;
-import idiot.module.Modules;
 import idiot.quick.QuickEnv;
 import idiot.quick.QuickProg;
 import idiot.rsl.RSLoader;
 import idiot.rsl.RSLoaderTask;
-import idiot.stager.Stager;
 
 var _root:Sprite;
 var _bg:BG;
@@ -54,8 +54,6 @@ function onUncaughtError(event:UncaughtErrorEvent):void {
 }
 
 function onRootProgress(event:ProgressEvent):void {
-
-	Logs.ins.log(event.bytesLoaded + ", " + event.bytesTotal, Log.LEVEL_INFO);
 }
 
 function onRootComplete(event:Event):void {
@@ -64,7 +62,7 @@ function onRootComplete(event:Event):void {
 	_root.stage.quality = StageQuality.BEST;
 	_root.stage.scaleMode = StageScaleMode.NO_SCALE;
 
-	_env.setup(_root.stage, boot);
+	_env.setup(_root.stage, boot, "http://127.0.0.1:55555/cfg");
 }
 
 function boot():void {
@@ -86,38 +84,37 @@ function boot():void {
 
 	for(var i:int = 0; i < urls.length; ++i) {
 
-		JobsQueue.ins.wait(function(done:Function):Boolean {
+		JobsQueue.ins.wait(new Job().setup(function(done:Function):Boolean {
 
 			Fetcher.ins.fetch(urls.shift(), function(ft:FetcherTask):void {
 
 				_prog.setProg(ft.bytes_loaded, ft.bytes_total, _env.preloads.length - urls.length, _env.preloads.length);
 
 				RSLoader.ins.load(ft.raw, function(rt:RSLoaderTask):void {
-
-					done();
+					done()
 				});
 
 			}, function(ft:FetcherTask):void {
 
 				_prog.setProg(ft.bytes_loaded, ft.bytes_total, _env.preloads.length - urls.length, _env.preloads.length);
+
 			});
 
 			return false;
-		});
+		}));
 	}
 
-	JobsQueue.ins.wait(function(done:Function):Boolean {
-
-		Stager.singleton.stage = _root.stage;
+	JobsQueue.ins.wait(new Job().setup(function(done:Function):Boolean {
+		const stage:Stage = _root.stage;
 
 		_root.parent.removeChild(_root);
 
+		new (getDefinitionByName(_env.entry) as Class)({stage: stage});
+
 		System.gc();
 
-		Modules.singleton.boot(_env.entry);
-
 		return true;
-	});
+	}));
 }
 
 class BG extends Loader {

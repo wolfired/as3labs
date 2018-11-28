@@ -9,6 +9,11 @@ package idiot.signal.terminal {
 		 * args = { texts:Array:要打印的文本 }
 		 */
 		public static const PRINT:uint = TERMINAL + 1; // 301
+		/**
+		 * 打印到控制台 <br/>
+		 * args = { text:String:要执行的命令 }
+		 */
+		public static const PARSE:uint = TERMINAL + 2; // 302
 
 		public function SignalTerminal() {
 			super();

@@ -1,12 +1,12 @@
 package idiot.fetch {
 
 	import flash.utils.ByteArray;
-	import idiot.pool.IPoolable;
 
-	public class FetcherTask implements IPoolable {
+	public class FetcherTask {
 
 		public function FetcherTask(raw:ByteArray = null) {
-			this.reset();
+			_loaded = fn_loaded;
+			_loading = fn_loading;
 			_raw = raw;
 		}
 
@@ -18,11 +18,6 @@ package idiot.fetch {
 
 		private var _bytes_loaded:uint;
 		private var _bytes_total:uint;
-
-		public function reset():void {
-			_loaded = fn_loaded;
-			_loading = fn_loading;
-		}
 
 		public function get url():String {
 			return _url;

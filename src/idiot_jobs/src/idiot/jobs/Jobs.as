@@ -2,12 +2,11 @@ package idiot.jobs {
 
 	import flash.display.Shape;
 	import flash.events.Event;
-	import idiot.pool.Pool;
 
 	/**
 	 * 按帧处理已注册工作
 	 * @author LinkWu
-	 */	
+	 */
 	public class Jobs {
 		public function Jobs() {
 			_trigger = new Shape();
@@ -20,10 +19,10 @@ package idiot.jobs {
 		private var _job:Job;
 
 		/**
-		 * @param exec (done:Function) => Boolean
+		 * @param exec
 		 */
-		public final function wait(exec:Function, thiz:Object = null):void {
-			_jobs.push((Pool.ins.pull(Job) as Job).setup(exec, thiz));
+		public final function wait(job:Job):void {
+			_jobs.push(job);
 
 			this.fire();
 		}
@@ -51,8 +50,6 @@ package idiot.jobs {
 		}
 
 		private function done():void {
-			Pool.ins.push(_job);
-
 			_job = null;
 
 			this.fire();

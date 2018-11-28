@@ -14,9 +14,8 @@ package idiot.signal {
 		public function Signal() {
 		}
 
-		protected var _args:Object;
-
 		protected var _signal_id:uint;
+		protected var _args:Object;
 
 		public function reset():void {
 			_signal_id = 0;

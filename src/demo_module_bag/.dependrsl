@@ -1,1 +1,1 @@
-idiot_env,idiot_log,idiot_pool,idiot_codec,idiot_socket,idiot_jobs,idiot_fetch,idiot_rsl,idiot_module
+idiot_codec,idiot_env,idiot_fetch,idiot_flags,idiot_jobs,idiot_log,idiot_module,idiot_pool,idiot_rsl,idiot_signal,idiot_socket,idiot_stager,idiot_terminal,idiot_thread

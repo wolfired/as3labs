@@ -1,11 +1,6 @@
 package idiot.flags {
 
 	import flash.utils.ByteArray;
-	import idiot.log.Log;
-	import idiot.log.Logs;
-	import idiot.pool.Pool;
-	import idiot.signal.SignalRouter;
-	import idiot.signal.terminal.SignalTerminal;
 
 	public final class Flags {
 
@@ -24,7 +19,7 @@ package idiot.flags {
 
 			if(null == command) {
 
-				Logs.ins.log("no command: " + cmdname, Log.LEVEL_WARN);
+				trace("no command: " + cmdname);
 				return;
 			}
 
@@ -164,7 +159,7 @@ package idiot.flags {
 			(_flags[name] as FlagString).curval = value;
 		}
 
-		public function usage():void {
+		public function usage():Array {
 			var texts:Array = [];
 			texts.push(_name + " - " + _help);
 
@@ -185,7 +180,7 @@ package idiot.flags {
 				texts.push("\t" + f.name + " - " + f.help);
 			}
 
-			SignalRouter.ins.route((Pool.ins.pull(SignalTerminal) as SignalTerminal).setup(SignalTerminal.PRINT, {texts: texts}));
+			return texts;
 		}
 
 		private function exec(input:String):void {

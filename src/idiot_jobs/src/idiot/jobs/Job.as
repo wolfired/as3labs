@@ -1,8 +1,6 @@
 package idiot.jobs {
 
-	import idiot.pool.IPoolable;
-
-	public class Job implements IPoolable {
+	public class Job {
 
 		public function Job() {
 		}
@@ -14,10 +12,12 @@ package idiot.jobs {
 			return _exec.call(_thiz, done);
 		}
 
-		public function reset():void {
-		}
-
-		public function setup(exec:Function, thiz:Object):Job {
+		/**
+		 * @param exec (done:Function) => Boolean
+		 * @param thiz
+		 * @return 
+		 */
+		public function setup(exec:Function, thiz:Object = null):Job {
 			_exec = exec;
 			_thiz = thiz;
 

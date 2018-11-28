@@ -8,7 +8,9 @@ package idiot.terminal {
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
-	import idiot.flags.Flags;
+	
+	import idiot.signal.SignalRouter;
+	import idiot.signal.terminal.SignalTerminal;
 
 	public class TextInput extends Sprite {
 		public function TextInput():void {
@@ -61,7 +63,7 @@ package idiot.terminal {
 				return;
 			}
 
-			Flags.parse(_input.text);
+			SignalRouter.ins.route(new SignalTerminal().setup(SignalTerminal.PARSE, {text: _input.text}));
 
 			_input.text = "";
 		}

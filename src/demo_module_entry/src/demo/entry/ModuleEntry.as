@@ -1,16 +1,21 @@
 package demo.entry {
 
+	import flash.display.Stage;
 	import idiot.module.Module;
-	import idiot.module.Modules;
+	import idiot.stager.Stager;
 
 	public class ModuleEntry extends Module {
 
-		public function ModuleEntry() {
+		/**
+		 * @param args {stage:Stage}
+		 */
+		public function ModuleEntry(args:Object) {
+			Stager.singleton.stage = args.stage as Stage;
+
+			this.boot();
 		}
 
 		override protected function booted():void {
-			Modules.singleton.boot("demo.world::ModuleWorld");
-			Modules.singleton.boot("demo.terminal::ModuleTerminal");
 		}
 	}
 }

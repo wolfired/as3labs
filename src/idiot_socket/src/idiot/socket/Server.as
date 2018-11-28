@@ -6,8 +6,6 @@ package idiot.socket {
 	import flash.net.Socket;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
-	import idiot.log.Log;
-	import idiot.log.Logs;
 
 	public class Server {
 		private static const _ins:Server = new Server();
@@ -54,15 +52,12 @@ package idiot.socket {
 		}
 
 		private function onConnect(event:Event):void {
-			Logs.ins.log("Socket connected", Log.LEVEL_INFO);
 		}
 
 		private function onClose(event:Event):void {
-			Logs.ins.log("Socket closed", Log.LEVEL_INFO);
 		}
 
 		private function onMessage(event:ProgressEvent):void {
-			Logs.ins.log("Socket messaged", Log.LEVEL_INFO);
 
 			if(!_reader.read(_sock)) {
 				return;

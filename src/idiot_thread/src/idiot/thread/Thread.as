@@ -4,9 +4,8 @@ package idiot.thread {
 	import flash.system.MessageChannel;
 	import flash.system.Worker;
 	import flash.system.WorkerState;
+	
 	import idiot.codec.ICodec;
-	import idiot.log.Log;
-	import idiot.log.Logs;
 
 	public final class Thread {
 		public static const current:Thread = new Thread(Worker.current, Threads.inMainThread ? uint.MIN_VALUE : uint.MAX_VALUE);
@@ -105,11 +104,9 @@ package idiot.thread {
 		}
 
 		private function onActivate(event:Event):void {
-			Logs.ins.log("#" + _id + " is Activated", Log.LEVEL_INFO);
 		}
 
 		private function onDeactivate(event:Event):void {
-			Logs.ins.log("#" + _id + " is Deactivated", Log.LEVEL_INFO);
 		}
 
 		/**
@@ -117,7 +114,6 @@ package idiot.thread {
 		 * @param event
 		 */
 		private function onWorkerStage(event:Event):void {
-			Logs.ins.log("#" + _id + " is " + _worker.state, Log.LEVEL_INFO);
 
 			WorkerState.RUNNING == _worker.state && this.started();
 		}
