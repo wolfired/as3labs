@@ -30,12 +30,12 @@ package idiot.fetch {
 
 		/**
 		 * @param url
-		 * @param loaded (task:Task) => void
-		 * @param loading (task:Task) => void
+		 * @param loaded (task:FetcherTask) => void
+		 * @param loading (task:FetcherTask) => void
 		 */
 		public function fetch(url:String, loaded:Function, loading:Function = null):void {
 			SWITCH::debug {
-				if(null != _task.url) {
+				if(_streamer.connected) {
 					throw new Error("URLStreamer: now is loading");
 				}
 			}
@@ -44,14 +44,24 @@ package idiot.fetch {
 			_task.loaded = loaded;
 			_task.loading = loading;
 
-			_task.raw.length = 0;
-
 			_task.bytes_loaded = 0;
 			_task.bytes_total = 0;
+
+			_task.raw.length = 0;
 
 			_request.url = _task.url;
 
 			_streamer.load(_request);
+		}
+
+		public function cancel():void {
+
+			if(!_streamer.connected) {
+
+				return;
+			}
+
+			_streamer.close();
 		}
 
 		private function onLoading(event:ProgressEvent):void {
@@ -66,10 +76,6 @@ package idiot.fetch {
 			this.extract(0);
 
 			_task.loaded(_task);
-
-			SWITCH::debug {
-				_task.url = null;
-			}
 		}
 
 		private function extract(cond:uint):void {

@@ -32,8 +32,8 @@ package idiot.fetch {
 
 		/**
 		 * @param url
-		 * @param loaded (task:Task) => void
-		 * @param loading (task:Task) => void
+		 * @param loaded (task:FetcherTask) => void
+		 * @param loading (task:FetcherTask) => void
 		 */
 		public function fetch(url:String, loaded:Function, loading:Function = null):void {
 			SWITCH::debug {
