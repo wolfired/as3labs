@@ -5,21 +5,27 @@ package idiot.thread {
 	import flash.system.Worker;
 	import flash.system.WorkerState;
 	import idiot.codec.ICodec;
+	import idiot.log.Log;
+	import idiot.log.Logs;
 
 	public final class Thread {
-		public static const current:Thread = new Thread(Worker.current, Worker.current.isPrimordial ? uint.MIN_VALUE : uint.MAX_VALUE);
+		public static const current:Thread = new Thread(Worker.current, Threads.inMainThread ? uint.MIN_VALUE : uint.MAX_VALUE);
 
 		public function Thread(worker:Worker, id:uint) {
 			_id = id;
 
 			_worker = worker;
 
-			if(this.inChildThread) { // 在子线程中
+			if(Threads.inChildThread) { // 在子线程中
+				_id = _worker.getSharedProperty("id");
+
 				_m2c = new Channel(_worker.getSharedProperty("p2c") as MessageChannel);
 				_m2c.serve();
 
 				_c2m = new Channel(_worker.getSharedProperty("c2p") as MessageChannel);
 			} else if(this.isChildThread) { // 在主线程中 且 是子线程
+				_worker.setSharedProperty("id", _id);
+
 				_worker.addEventListener(Event.ACTIVATE, onActivate);
 				_worker.addEventListener(Event.DEACTIVATE, onDeactivate);
 				_worker.addEventListener(Event.WORKER_STATE, onWorkerStage);
@@ -31,6 +37,8 @@ package idiot.thread {
 				_c2m.serve();
 				_worker.setSharedProperty("c2p", _c2m.channel);
 			}
+
+			this.started = null;
 		}
 
 		private var _id:uint;
@@ -39,28 +47,31 @@ package idiot.thread {
 		private var _m2c:Channel;
 		private var _c2m:Channel;
 
+		private var _started:Function;
+
 		public function get id():uint {
 			return _id;
 		}
 
 		public function get isMainThread():Boolean {
-			return uint.MIN_VALUE == _id;
+			return _worker.isPrimordial;
 		}
 
 		public function get isChildThread():Boolean {
-			return uint.MIN_VALUE != _id;
+			return !_worker.isPrimordial;
 		}
 
-		public function get inChildThread():Boolean {
-			return uint.MAX_VALUE == _id;
-		}
-
-		public function start():void {
+		/**
+		 * @param started () => void
+		 */
+		public function start(started:Function = null):void {
 			SWITCH::debug {
 				if(WorkerState.NEW != _worker.state) {
 					throw new Error("had started");
 				}
 			}
+
+			this.started = started;
 
 			_worker.start();
 		}
@@ -70,11 +81,11 @@ package idiot.thread {
 		}
 
 		public function send(o:ICodec):void {
-			this.inChildThread ? _c2m.send(o) : _m2c.send(o);
+			Threads.inMainThread ? _m2c.send(o) : _c2m.send(o);
 		}
 
 		public function recv():ICodec {
-			return this.inChildThread ? _m2c.recv() : _c2m.recv();
+			return Threads.inChildThread ? _m2c.recv() : _c2m.recv();
 		}
 
 		public function get state():String {
@@ -85,12 +96,20 @@ package idiot.thread {
 			return _worker;
 		}
 
+		private function get started():Function {
+			return _started;
+		}
+
+		private function set started(value:Function):void {
+			_started = null == value ? fn_started : value;
+		}
+
 		private function onActivate(event:Event):void {
-//			trace("Thread #" + _id + " is Activated");
+			Logs.ins.log("#" + _id + " is Activated", Log.LEVEL_INFO);
 		}
 
 		private function onDeactivate(event:Event):void {
-//			trace("Thread #" + _id + " is Deactivated");
+			Logs.ins.log("#" + _id + " is Deactivated", Log.LEVEL_INFO);
 		}
 
 		/**
@@ -98,7 +117,17 @@ package idiot.thread {
 		 * @param event
 		 */
 		private function onWorkerStage(event:Event):void {
-			trace("Thread #" + _id + " is " + _worker.state);
+			Logs.ins.log("#" + _id + " is " + _worker.state, Log.LEVEL_INFO);
+
+			WorkerState.RUNNING == _worker.state && this.started();
+		}
+
+		private function fn_started():void {
+
+		}
+
+		private function fn_terminated():void {
+
 		}
 	}
 }

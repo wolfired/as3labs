@@ -2,6 +2,7 @@ package idiot.thread {
 
 	import flash.concurrent.Condition;
 	import flash.concurrent.Mutex;
+	import flash.system.Worker;
 	import flash.system.WorkerDomain;
 	import flash.utils.ByteArray;
 
@@ -17,10 +18,18 @@ package idiot.thread {
 		}
 
 		public static function get unsupported():Boolean {
-			return !WorkerDomain.isSupported || null == (_singleton || (_singleton = new Threads(new Singleton())));
+			return !WorkerDomain.isSupported || null == (_singleton || (_singleton = new Threads()));
 		}
 
-		public function Threads(singleton:Singleton) {
+		public static function get inMainThread():Boolean {
+			return Worker.current.isPrimordial;
+		}
+
+		public static function get inChildThread():Boolean {
+			return !Worker.current.isPrimordial;
+		}
+
+		public function Threads() {
 			_threads = new Vector.<Thread>();
 			_threads.push(Thread.current);
 
@@ -37,21 +46,12 @@ package idiot.thread {
 		private var _mutex:Mutex;
 		private var _condition:Condition;
 
-		public function create(swf:ByteArray, fire:Boolean = false):Thread {
-			const thread:Thread = _threads[_threads.push(new Thread(WorkerDomain.current.createWorker(swf), _threads.length)) - 1];
-
-			if(fire) {
-				thread.start();
-			}
-
-			return thread;
+		public function create(swf:ByteArray):Thread {
+			return _threads[_threads.push(new Thread(WorkerDomain.current.createWorker(swf), _threads.length)) - 1];
 		}
 
 		public function thread(id:uint):Thread {
 			return _threads[id];
 		}
 	}
-}
-
-class Singleton {
 }
