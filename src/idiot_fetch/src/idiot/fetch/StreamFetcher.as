@@ -55,9 +55,7 @@ package idiot.fetch {
 		}
 
 		public function cancel():void {
-
 			if(!_streamer.connected) {
-
 				return;
 			}
 
@@ -78,11 +76,11 @@ package idiot.fetch {
 			_task.loaded(_task);
 		}
 
-		private function extract(cond:uint):void {
-			if(cond > _streamer.bytesAvailable) {
+		private function extract(count:uint):void {
+			if(_streamer.bytesAvailable < count) {
 				return;
 			}
-			_streamer.readBytes(_task.raw, _task.raw.length, cond);
+			_streamer.readBytes(_task.raw, _task.raw.length, count);
 		}
 	}
 }
