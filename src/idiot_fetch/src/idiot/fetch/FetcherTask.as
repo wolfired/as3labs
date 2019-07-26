@@ -3,7 +3,6 @@ package idiot.fetch {
 	import flash.utils.ByteArray;
 
 	public class FetcherTask {
-
 		public function FetcherTask(raw:ByteArray = null) {
 			_loaded = fn_loaded;
 			_loading = fn_loading;

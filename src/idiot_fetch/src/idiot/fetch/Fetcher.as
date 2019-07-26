@@ -8,12 +8,6 @@ package idiot.fetch {
 	import flash.utils.ByteArray;
 
 	public final class Fetcher {
-		private static const _ins:Fetcher = new Fetcher();
-
-		public static function get ins():Fetcher {
-			return _ins;
-		}
-
 		public function Fetcher() {
 			_loader = new URLLoader();
 			_loader.dataFormat = URLLoaderDataFormat.BINARY;
