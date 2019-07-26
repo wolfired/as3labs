@@ -13,12 +13,6 @@ package idiot.rsl {
 		public static const APPEND:uint = 0x1;
 		public static const STANDALONE:uint = 0x2;
 
-		private static const _ins:RSLoader = new RSLoader();
-
-		public static function get ins():RSLoader {
-			return _ins;
-		}
-
 		public function RSLoader() {
 			_loader = new Loader();
 			_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onLoading);
@@ -46,7 +40,7 @@ package idiot.rsl {
 		/**
 		 * @param bytes
 		 * @param loaded (task:Task) => void
-		 * @param ctx
+		 * @param policy
 		 * @return
 		 */
 		public function load(bytes:ByteArray, loaded:Function, loading:Function = null, policy:uint = RSLoader.MERGE):uint {
