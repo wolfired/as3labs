@@ -1,58 +1,36 @@
 package idiot.jobs {
 
-	import flash.display.Shape;
-	import flash.events.Event;
+	import idiot.jobs.scheduler.Scheduler;
+	import idiot.jobs.trigger.Trigger;
+	import idiot.jobs.job.Job;
 
 	/**
-	 * 按帧处理已注册工作
 	 * @author LinkWu
 	 */
-	public class Jobs {
-		public function Jobs() {
-			_trigger = new Shape();
-			_jobs = new Vector.<Job>();
+	public final class Jobs {
+		public function Jobs(trigger:Trigger, scheduler:Scheduler) {
+			_trigger = trigger;
+			_scheduler = scheduler;
 		}
 
-		protected var _jobs:Vector.<Job>;
-
-		private var _trigger:Shape;
-		private var _job:Job;
+		private var _trigger:Trigger;
+		private var _scheduler:Scheduler;
 
 		/**
 		 * @param exec
 		 */
-		public final function wait(job:Job):void {
-			_jobs.push(job);
+		public function wait(job:Job):void {
+			_scheduler.wait(job);
 
 			this.fire();
-		}
-
-		protected function get next():Job {
-			throw new Error("error: have to override");
 		}
 
 		private function fire():void {
-			if(null != _job || 0 == _jobs.length) {
+			if(_scheduler.blocked) {
 				return;
 			}
 
-			if(!_trigger.hasEventListener(Event.ENTER_FRAME)) {
-				_trigger.addEventListener(Event.ENTER_FRAME, this.onFire);
-			}
-		}
-
-		private function onFire(event:Event):void {
-			_trigger.removeEventListener(Event.ENTER_FRAME, this.onFire);
-
-			if((_job = this.next).exec(this.done)) {
-				this.done();
-			}
-		}
-
-		private function done():void {
-			_job = null;
-
-			this.fire();
+			_trigger.fire(_scheduler.next(this.fire));
 		}
 	}
 }
