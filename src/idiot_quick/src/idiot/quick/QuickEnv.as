@@ -9,22 +9,34 @@ package idiot.quick {
 
 		private var _preloads:Vector.<String>;
 
+		/**
+		 * 服务器IP
+		 */
 		public function get host():String {
 			return this.loadString("host", "127.0.0.1");
 		}
 
+		/**
+		 * 服务器端口
+		 */
 		public function get port():int {
 			return this.loadInt("port", 8888);
 		}
 
-		public function get pfr():int {
-			return this.loadInt("pfr", 843);
+		/**
+		 * 安全沙箱策略文件查询端口
+		 */
+		public function get pf_port():int {
+			return this.loadInt("pf_port", 8889);
 		}
 
 		public function get daemon():String {
 			return this.loadString("daemon", "./demo_daemoner.swf");
 		}
 
+		/**
+		 * 入口模块
+		 */
 		public function get entry():String {
 			return this.loadString("entry", "demo.entry::ModuleEntry");
 		}
