@@ -1,15 +1,15 @@
 package {
 
 	import flash.display.Sprite;
-	
-	import idiot.quick.QuickEnv;
+	import demo.embed.ins.env_embed;
+	import idiot.quick.QuickBack;
+	import idiot.quick.QuickLauncher;
 	import idiot.quick.QuickProg;
-	import idiot.quick.launch;
 
 	public class demo_launcher extends Sprite {
 
 		public function demo_launcher() {
-			launch(this, QuickEnv, QuickProg);
+			new QuickLauncher(env_embed, this, QuickBack, QuickProg);
 		}
 	}
 }
