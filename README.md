@@ -4,28 +4,42 @@
 # Projects
 
 ```
+ demo_daemoner
+ demo_launcher
 
- idiot_codec
-+idiot_env
-+idiot_fetch
- idiot_flags
-+idiot_jobs
-+idiot_log
- idiot_module
- idiot_pool
-+idiot_rsl
+    +demo_embed
+        +idiot_quick
 
- idiot_signal
+    +idiot_quick
+        +idiot_env
+        +idiot_fetch
+        +idiot_jobs
+        +idiot_rsl
+```
 
- idiot_socket
- idiot_stager
- idiot_terminal
- idiot_thread
-
+```
  demo_module_bag
  demo_module_entry
  demo_module_terminal
  demo_module_world
 
-```
+    -demo_core
+        +idiot_socket
+        +idiot_stager
+        +idiot_terminal
+        +idiot_thread
 
+        +idiot_signal
+
+        +idiot_codec
+        +idiot_flags
+        +idiot_module
+        +idiot_pool
+
+    -demo_embed
+    -idiot_quick
+        +idiot_env
+        +idiot_fetch
+        +idiot_jobs
+        +idiot_rsl    
+```
