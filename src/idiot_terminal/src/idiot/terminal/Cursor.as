@@ -21,26 +21,21 @@ package idiot.terminal {
 		private var _mark:uint;
 
 		public function show():void {
-
 			if(!this.hasEventListener(Event.ENTER_FRAME)) {
-
 				this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			}
 		}
 
 		public function hide():void {
-
 			this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 			this.visible = false;
 		}
 
 		public function move():void {
-
 			this.x = _input.textWidth;
 		}
 
 		private function onAddToStage(event:Event):void {
-
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddToStage);
 
 			this.addEventListener(Event.REMOVED_FROM_STAGE, onRemoveFromStage);
@@ -50,13 +45,11 @@ package idiot.terminal {
 		}
 
 		private function onRemoveFromStage(event:Event):void {
-
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, onRemoveFromStage);
 			this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 
 		private function onEnterFrame(event:Event):void {
-
 			var cur_time:int = getTimer();
 
 			if(360 > cur_time - _pre_time) {
