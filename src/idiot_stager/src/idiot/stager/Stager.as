@@ -4,12 +4,6 @@ package idiot.stager {
 
 	public class Stager {
 
-		private static const _singleton:Stager = new Stager();
-
-		public static function get singleton():Stager {
-			return _singleton;
-		}
-
 		public function Stager() {
 		}
 
