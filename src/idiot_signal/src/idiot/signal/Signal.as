@@ -1,15 +1,6 @@
 package idiot.signal {
 
-	import idiot.pool.IPoolable;
-
-	public class Signal implements IPoolable {
-
-		/** 网络命令 */
-		public static const SOCKET:uint = 100;
-		/** 线程 */
-		public static const THREAD:uint = 200;
-		/** 控制台 */
-		public static const TERMINAL:uint = 300;
+	public class Signal {
 
 		public function Signal() {
 		}

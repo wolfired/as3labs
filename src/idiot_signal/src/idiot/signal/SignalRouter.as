@@ -1,21 +1,17 @@
 package idiot.signal {
 
 	public class SignalRouter implements ISignalRouter {
-
-		private static const _ins:SignalRouter = new SignalRouter();
-
-		public static function get ins():SignalRouter {
-			return _ins;
-		}
-
 		public function SignalRouter() {
 
 		}
 
 		private var _id_handlers_map:Array = [];
 
+		/**
+		 * @param signal_id
+		 * @param handler (signal:Signal) => void
+		 */
 		public final function addHandler(signal_id:uint, handler:Function):void {
-
 			var index:int = this.indexOfHandler(signal_id, handler);
 
 			if(-1 != index) {
@@ -26,7 +22,6 @@ package idiot.signal {
 		}
 
 		public final function delHandler(signal_id:uint, handler:Function):void {
-
 			var index:int = this.indexOfHandler(signal_id, handler);
 
 			if(-1 == index) {
@@ -37,26 +32,21 @@ package idiot.signal {
 		}
 
 		public final function clnHnadler(signal_id:uint):void {
-
 			this.getHandlers(signal_id).length = 0;
 		}
 
 		public final function route(signal:Signal):void {
-
 			var handlers:Vector.<Function> = this.getHandlers(signal.signal_id);
 
 			for each(var handler:Function in handlers) {
-
 				handler(signal);
 			}
 		}
 
 		private function getHandlers(signal_id:uint):Vector.<Function> {
-
 			var handlers:Vector.<Function> = _id_handlers_map[signal_id] as Vector.<Function>;
 
 			if(null == handlers) {
-
 				_id_handlers_map[signal_id] = handlers = new Vector.<Function>();
 			}
 
@@ -64,7 +54,6 @@ package idiot.signal {
 		}
 
 		private function indexOfHandler(signal_id:uint, handler:Function):int {
-
 			return this.getHandlers(signal_id).indexOf(handler);
 		}
 	}
