@@ -50,7 +50,7 @@ package idiot.env {
 		/**
 		 * 显示默认参数列表
 		 * @param separator 分隔符, "\n" or "&"
-		 */		
+		 */
 		public final function print(separator:String = "\n"):void {
 			const qname:String = getQualifiedClassName(this);
 			const clazz:Class = getDefinitionByName(qname) as Class;
