@@ -1,36 +1,34 @@
 package idiot.module {
 
-	public class Module implements IModule {
+	public class Module {
 		public function Module() {
 		}
 
 		public final function boot():void {
+			this.bootSelf();
 
-			this.booting();
-
-			this.booted();
+			this.bootOther();
 		}
 
 		public final function halt():void {
+			this.haltOther();
 
-			this.halting();
-
-			this.halted();
+			this.haltSelf();
 		}
 
-		protected function booting():void {
-
-		}
-
-		protected function booted():void {
+		protected function bootOther():void {
 
 		}
 
-		protected function halting():void {
+		protected function bootSelf():void {
 
 		}
 
-		protected function halted():void {
+		protected function haltOther():void {
+
+		}
+
+		protected function haltSelf():void {
 
 		}
 	}
