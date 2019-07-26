@@ -1,24 +1,26 @@
 package idiot.flags {
 
 	import flash.utils.ByteArray;
+	import idiot.flags.types.FlagBoolean;
+	import idiot.flags.types.FlagInt;
+	import idiot.flags.types.FlagNumber;
+	import idiot.flags.types.FlagString;
+	import idiot.flags.types.FlagUint;
 
 	public final class Flags {
 
 		private static const _commands:Object = {};
 
 		public static function register(command:Flags):void {
-
 			_commands[command.name] = command;
 		}
 
 		public static function parse(input:String):void {
-
 			input = input.replace(/^\s*/gs, "").replace(/\s*$/gs, "");
 			const cmdname:String = input.match(/^\S+/gs)[0] as String;
 			const command:Flags = _commands[cmdname];
 
 			if(null == command) {
-
 				trace("no command: " + cmdname);
 				return;
 			}
@@ -27,7 +29,6 @@ package idiot.flags {
 		}
 
 		public function Flags(name:String, help:String) {
-
 			_name = name;
 			_help = help;
 
@@ -54,7 +55,6 @@ package idiot.flags {
 		 * @param fn 回调函数 (flags:Flags) => uint
 		 */
 		public function addFlagBoolean(name:String, defval:Boolean, help:String, fn:Function = null):Flags {
-
 			const f:FlagBoolean = new FlagBoolean();
 
 			f.name = name;
@@ -76,7 +76,6 @@ package idiot.flags {
 		}
 
 		public function addFlagInt(name:String, defval:int, help:String):Flags {
-
 			const f:FlagInt = new FlagInt();
 
 			f.name = name;
@@ -97,7 +96,6 @@ package idiot.flags {
 		}
 
 		public function addFlagUint(name:String, defval:uint, help:String):Flags {
-
 			const f:FlagUint = new FlagUint();
 
 			f.name = name;
@@ -118,7 +116,6 @@ package idiot.flags {
 		}
 
 		public function addFlagNumber(name:String, defval:Number, help:String):Flags {
-
 			const f:FlagNumber = new FlagNumber();
 
 			f.name = name;
@@ -139,7 +136,6 @@ package idiot.flags {
 		}
 
 		public function addFlagString(name:String, defval:String, help:String):Flags {
-
 			const f:FlagString = new FlagString();
 
 			f.name = name;
@@ -167,14 +163,12 @@ package idiot.flags {
 			var f:Flag;
 
 			for each(f in _flags) {
-
 				arr.push({name: f.name});
 			}
 
 			arr.sortOn("name");
 
 			for each(var o:Object in arr) {
-
 				f = _flags[o.name] as Flag;
 
 				texts.push("\t" + f.name + " - " + f.help);
@@ -187,9 +181,7 @@ package idiot.flags {
 			input = input.replace(/^\s*/gs, "");
 
 			if(null == input || "" == input) {
-
 				this.usage();
-
 				return;
 			}
 
@@ -270,18 +262,14 @@ package idiot.flags {
 			var next:String;
 
 			for(i = 0; i < ss.length; ++i) {
-
 				name = ss[i].substr(1);
 				next = ss.length > i + 1 ? ("-" == ss[i + 1].charAt(0) ? null : ss[i + 1]) : null;
 
 				flag = _flags[name] as Flag;
 
 				if(null == next) {
-
 					(flag is FlagBoolean) && this.setBoolean(name, !(flag as FlagBoolean).defval);
-
 				} else {
-
 					(flag is FlagBoolean) && this.setBoolean(name, "true" == next);
 					(flag is FlagInt) && this.setInt(name, int(parseInt(next)));
 					(flag is FlagUint) && this.setUint(name, uint(parseInt(next)));
@@ -295,7 +283,6 @@ package idiot.flags {
 			var cmd:FlagBoolean;
 
 			for each(flag in _flags) {
-
 				cmd = flag as FlagBoolean;
 
 				if(null == cmd || null == cmd.fn || !cmd.curval) {
