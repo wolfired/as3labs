@@ -6,6 +6,7 @@ package {
 	import idiot.quick.QuickLauncher;
 	import idiot.quick.QuickProg;
 
+	[SWF(width="950",height="550")]
 	public class demo_launcher extends Sprite {
 
 		public function demo_launcher() {
